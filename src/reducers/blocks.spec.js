@@ -92,4 +92,31 @@ describe('Reducers::Blocks', () => {
 
     expect(reducer(blockState, action)).toEqual(expected)
   })
+
+  it('Should perform GET_BLOCKS_STATUS_FAILURE', () => {
+    const blockState = {
+      list: [nodeTestA, nodeTestB]
+    }
+
+    const action = {
+      type: actionTypes.GET_BLOCKS_STATUS_FAILURE, 
+      nodeUrl: nodeTestB.url,
+    }
+
+    const expected  = {
+      list: [
+        nodeTestA,
+        {
+          ...nodeTestB,
+          online: false,
+          blocks: {
+            loading: false,
+            error: true,
+            data: []
+          }
+        }
+      ]
+    }
+    expect(reducer(blockState, action)).toEqual(expected)
+  })
 });
