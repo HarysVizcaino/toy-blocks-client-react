@@ -8,9 +8,11 @@ import {
   AccordionDetails,
   makeStyles,
   Box,
+  CircularProgress,
 } from "@material-ui/core";
 import colors from "../constants/colors";
 import Status from "./Status";
+import Block from './Block';
 
 const Node = ({ node, expanded, toggleNodeExpanded }) => {
   const classes = useStyles();
@@ -46,7 +48,22 @@ const Node = ({ node, expanded, toggleNodeExpanded }) => {
         </Box>
       </AccordionSummary>
       <AccordionDetails>
-        <Typography>Blocks go here</Typography>
+          { node.blocks && (node.blocks.loading && <CircularProgress />) }
+          { node.blocks && (node.blocks.error ? 
+            (
+              <Typography variant="subtitle1" className={classes.secondaryHeading}>
+              {'We are having issues getting the blocks...'}
+            </Typography>
+            ) : node.blocks.data && node.blocks.data.length > 0 ? (
+              <Box className={classes.blockWrapper}>
+               {node.blocks.data.map((block) => (
+                 <Block key={block.id} block={block} />
+               ))} 
+              </Box>
+            ) : <Typography variant="subtitle1" className={classes.secondaryHeading}>
+              {'This node do not have blocks'}
+            </Typography>
+          ) }
       </AccordionDetails>
     </Accordion>
   );
@@ -96,6 +113,9 @@ const useStyles = makeStyles((theme) => ({
     color: colors.faded,
     lineHeight: 2,
   },
+  blockWrapper: {
+    width: '100%',
+  }
 }));
 
 Node.propTypes = {
